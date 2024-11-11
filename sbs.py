@@ -166,7 +166,7 @@ if __name__ == "__main__":
     password = st.text_input("请输入zepplife密码")
     step1 = st.text_input("请输入期望最小步数")
     step2 = st.text_input("请输入期望最大步数")
-    step = str(random.randint(int(step1), int(step2)))
+    
     
 if not (phone and password and step1 and step2 ):
     missing_vars = []
@@ -187,5 +187,6 @@ if st.button("开始任务"):
     else:
         st.write("您输入的信息有误，请重新输入。")
 
+    step = str(random.randint(int(step1), int(step2)))
         
     content += main(phone, password, step) + '\n'
