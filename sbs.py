@@ -35,7 +35,7 @@ def wxpusher_send():
         }
     json_data = json.dumps(data)
     response = requests.post('https://wxpusher.zjiecode.com/api/send/message', headers=headers, data=json_data)
-    print(response.text, "\n")
+    st.write(response.text, "\n")
 
 
 now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
@@ -43,8 +43,8 @@ headers = {
     'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 9; MI 6 MIUI/20.6.18)'
 }
 
-def printf(text):
-    print(text)
+def st.writef(text):
+    st.write(text)
     sys.stdout.flush()
 
 # 获取登录code
@@ -106,7 +106,7 @@ def login(user, password):
         userid = r2["token_info"]["user_id"]
         return login_token, userid
     except Exception as e:
-        print(e)
+        st.write(e)
         return 0,0
 
 
@@ -116,16 +116,16 @@ def main(user, passwd, step):
     password = str(passwd)
     step = str(step)
     if user == '' or password == '':
-        print("未填写小米运动用户名或密码,取消运行")
+        st.write("未填写小米运动用户名或密码,取消运行")
         exit(0)
         # return "用户名或密码填写有误！"
     if step == '':
-        print("已设置为随机步数（10000-19999）")
+        st.write("已设置为随机步数（10000-19999）")
         step = str(random.randint(10000, 19999))
     login_token = 0
     login_token, userid = login(user, password)
     if login_token == 0:
-        print("登陆失败！")
+        st.write("登陆失败！")
         
         return "login fail!"
 
@@ -151,9 +151,9 @@ def main(user, passwd, step):
     data = f'userid={userid}&last_sync_data_time=1597306380&device_type=0&last_deviceid=DA932FFFFE8816E7&data_json={data_json}'
 
     response = requests.post(url, data=data, headers=head).json()
-    # print(response)
+    # st.write(response)
     result = f"{user[:4]}****{user[-4:]}: [{now}] 修改步数（{step}）" + response['message']
-    print(result)
+    st.write(result)
     return result
 
 
@@ -171,17 +171,24 @@ def get_app_token(login_token):
     url = f"https://account-cn.huami.com/v1/client/app_tokens?app_name=com.xiaomi.hm.health&dn=api-user.huami.com%2Capi-mifit.huami.com%2Capp-analytics.huami.com&login_token={login_token}"
     response = requests.get(url, headers=headers).json()
     app_token = response['token_info']['app_token']
-    # print("app_token获取成功！")
-    # print(app_token)
+    # st.write("app_token获取成功！")
+    # st.write(app_token)
     return app_token
 
 
 if __name__ == "__main__":
-    print(f"微信公众号【偶尔敲代码】\n")
-    ck = os.getenv('xxxxx_sbs')
+    st.write(f"微信公众号【偶尔敲代码】\n")
+    ck = st.text_input("请输入 token")
+    if st.button("开始任务"):
+        if token:st.write("开始执行任务")
+        else: st.write("您输入的ck有误，请重新输入。")
+    if not token: st.stop()
+    if not token:
+        st.write(f'⛔️未获取到ck变量：请检查变量 {token} 是否填写')
+        exit(0)
     cklist = ck.split("====")
     content = '微信公众号【偶尔敲代码】\n\n'
-    print(f"获取到 {len(cklist)} 个账号")
+    st.write(f"获取到 {len(cklist)} 个账号")
     content = content + f"获取到 {len(cklist)} 个账号\n"
 
     for line in range(0, len(cklist)):
