@@ -155,13 +155,13 @@ def get_app_token(login_token):
 
 if __name__ == "__main__":
     st.write(f"微信公众号【偶尔敲代码】\n")
-    ck = st.text_input("请输入 token")
+    ck = st.text_input("请输入ck")
     if st.button("开始任务"):
-        if token:st.write("开始执行任务")
+        if ck:st.write("开始执行任务")
         else: st.write("您输入的ck有误，请重新输入。")
-    if not token: st.stop()
-    if not token:
-        st.write(f'⛔️未获取到ck变量：请检查变量 {token} 是否填写')
+    if not ck: st.stop()
+    if not ck:
+        st.write(f'⛔️未获取到ck变量：请检查变量 {ck} 是否填写')
         exit(0)
     cklist = ck.split("====")
     content = '微信公众号【偶尔敲代码】\n\n'
