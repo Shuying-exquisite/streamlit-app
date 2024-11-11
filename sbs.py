@@ -16,7 +16,8 @@ import time
 from urllib import parse
 import json
 
-now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+timestamp = time.time()
+now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timestamp + 8 * 3600))
 headers = {
     'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 9; MI 6 MIUI/20.6.18)'
 }
