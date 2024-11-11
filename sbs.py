@@ -16,9 +16,6 @@ import time
 from urllib import parse
 import json
 
-push_token = '' #Wxpusher的UID
-push_title = '刷步数' #推送标题
-push_content = ''
 now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 headers = {
     'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 9; MI 6 MIUI/20.6.18)'
@@ -177,5 +174,3 @@ if __name__ == "__main__":
         password = ck_temp[1]
         step = str(random.randint(int(ck_temp[2]), int(ck_temp[3])))
         content += main(phone, password, step) + '\n'
-
-    push_content = content
