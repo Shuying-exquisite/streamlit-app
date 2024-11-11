@@ -43,7 +43,7 @@ headers = {
     'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 9; MI 6 MIUI/20.6.18)'
 }
 
-def st.writef(text):
+def printf(text):
     st.write(text)
     sys.stdout.flush()
 
