@@ -154,23 +154,39 @@ def get_app_token(login_token):
 
 
 if __name__ == "__main__":
+    markdown_text = """
+# 刷步数程序
+ [点击这里访问操作文档](https://shuyingsbsoperationdocument.streamlit.app)
+"""
+    st.markdown(markdown_text)
     st.write(f"微信公众号【偶尔敲代码】\n")
-    ck = st.text_input("请输入ck")
-    if st.button("开始任务"):
-        if ck:st.write("开始执行任务")
-        else: st.write("您输入的ck有误，请重新输入。")
-    if not ck: st.stop()
-    if not ck:
-        st.write(f'⛔️未获取到ck变量：请检查变量 {ck} 是否填写')
-        exit(0)
-    cklist = ck.split("====")
+
     content = '微信公众号【偶尔敲代码】\n\n'
     st.write(f"获取到 {len(cklist)} 个账号")
-    content = content + f"获取到 {len(cklist)} 个账号\n"
+    phone = st.text_input("请输入zepplife账号")
+    password = st.text_input("请输入zepplife密码")
+    step1 = st.text_input("请输入期望最小步数")
+    step2 = st.text_input("请输入期望最大步数")
+    step = str(random.randint(int(step1), int(step2)))
+    
+if not (phone and password and step1 and step2 ):
+    missing_vars = []
+    if not phone:
+        missing_vars.append("zepplife账号")
+    if not password:
+        missing_vars.append("zepplife密码")
+    if not step1:
+        missing_vars.append("期望最小步数")
+    if not step2:
+        missing_vars.append("期望最大步数")        
+    st.write(f'⛔️未获取到变量：请检查以下变量是否填写：{", ".join(missing_vars)}')
+    st.stop()
 
-    for line in range(0, len(cklist)):
-        ck_temp = cklist[line].split("&")
-        phone = ck_temp[0]
-        password = ck_temp[1]
-        step = str(random.randint(int(ck_temp[2]), int(ck_temp[3])))
-        content += main(phone, password, step) + '\n'
+if st.button("开始任务"):
+    if phone and password and step1 and step2:
+        st.write("开始执行任务")
+    else:
+        st.write("您输入的信息有误，请重新输入。")
+
+        
+    content += main(phone, password, step) + '\n'
