@@ -19,7 +19,10 @@ import json
 push_token = '' #Wxpusher的UID
 push_title = '刷步数' #推送标题
 push_content = ''
-
+now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+headers = {
+    'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 9; MI 6 MIUI/20.6.18)'
+}
 def printf(text):
     st.write(text)
     sys.stdout.flush()
