@@ -6,7 +6,7 @@
 #使用Zepp Life账号刷步数，可手机或邮箱，自行绑定微信及支付宝，方法自行百度
 #变量名:xxxxx_sbs,  变量值：账号1＆密码1＆最小步数&最大步数，多号用====隔开
 #如 abc1&xxxx&20000&30000====abcd2&yyyyy&3000&6666
-
+import streamlit as st
 import requests
 import random
 import re
