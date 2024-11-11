@@ -7,7 +7,6 @@
 #变量名:xxxxx_sbs,  变量值：账号1＆密码1＆最小步数&最大步数，多号用====隔开
 #如 abc1&xxxx&20000&30000====abcd2&yyyyy&3000&6666
 
-from sendNotify import send
 import requests
 import random
 import re
@@ -20,28 +19,6 @@ import json
 push_token = '' #Wxpusher的UID
 push_title = '刷步数' #推送标题
 push_content = ''
-wxapp_token = 'AT_aTsJmaY4CWJwSNXRlMiWeJgk5zlvmuoi'
-
-def wxpusher_send():
-    headers = {'Content-Type': 'application/json;charset=utf-8'}
-    data = {
-            "appToken": wxapp_token,
-            "uids": [f"{push_token}"],
-            "topicIds": [],
-            "summary": push_title,
-            "content": push_content,
-            "contentType": 1,
-            "verifyPay": False
-        }
-    json_data = json.dumps(data)
-    response = requests.post('https://wxpusher.zjiecode.com/api/send/message', headers=headers, data=json_data)
-    st.write(response.text, "\n")
-
-
-now = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
-headers = {
-    'User-Agent': 'Dalvik/2.1.0 (Linux; U; Android 9; MI 6 MIUI/20.6.18)'
-}
 
 def printf(text):
     st.write(text)
@@ -199,4 +176,3 @@ if __name__ == "__main__":
         content += main(phone, password, step) + '\n'
 
     push_content = content
-    wxpusher_send()
