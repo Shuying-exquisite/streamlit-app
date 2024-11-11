@@ -162,7 +162,6 @@ if __name__ == "__main__":
     st.write(f"微信公众号【偶尔敲代码】\n")
 
     content = '微信公众号【偶尔敲代码】\n\n'
-    st.write(f"获取到 {len(cklist)} 个账号")
     phone = st.text_input("请输入zepplife账号")
     password = st.text_input("请输入zepplife密码")
     step1 = st.text_input("请输入期望最小步数")
