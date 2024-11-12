@@ -192,14 +192,15 @@ if not (phone and password and step1 and step2 ):
     if not step2:
         missing_vars.append("期望最大步数")        
     st.write(f'⛔️未获取到变量：请检查以下变量是否填写：{", ".join(missing_vars)}')
-    st.stop()
+
 
 if st.button("开始任务"):
     if phone and password and step1 and step2:
         st.write("开始执行任务")
     else:
         st.write("您输入的信息有误，请重新输入。")
-
+        st.stop()
+    
     step = str(random.randint(int(step1), int(step2)))
         
     content += main(phone, password, step) + '\n'
