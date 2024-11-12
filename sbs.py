@@ -158,6 +158,16 @@ if __name__ == "__main__":
 # 刷步数程序
  [点击这里访问操作文档](https://shuyingsbsoperationdocument.streamlit.app)
 """
+    page_bg_img = '''
+<style>
+.stApp {
+    background-image: url("https://example.com/your-image.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+</style>
+'''
     st.markdown(markdown_text)
     st.write(f"微信公众号【偶尔敲代码】\n")
 
