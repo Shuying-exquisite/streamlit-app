@@ -163,7 +163,7 @@ if __name__ == "__main__":
     <style>
     .stApp {
         background-image: url("https://raw.githubusercontent.com/Shuying-exquisite/streamlit-app/main/image.jpg");
-        background-size: cover;
+        background-size: 100% 100%;
         background-repeat: no-repeat;
         background-attachment: fixed;
     }
