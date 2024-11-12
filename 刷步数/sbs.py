@@ -194,7 +194,7 @@ if not (phone and password and step1 and step2 ):
     # 自定义CSS样式，设置文字颜色为白色
     st.markdown(
         f'''
-        <p style="color: white; background-color: red; padding: 10px; border-radius: 5px;">
+        <p style="color: white; padding: 10px;">
         ⛔️未获取到变量：请检查以下变量是否填写：{", ".join(missing_vars)}
         </p>
         ''',
