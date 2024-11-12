@@ -191,8 +191,15 @@ if not (phone and password and step1 and step2 ):
         missing_vars.append("期望最小步数")
     if not step2:
         missing_vars.append("期望最大步数")        
-    st.write(f'⛔️未获取到变量：请检查以下变量是否填写：{", ".join(missing_vars)}')
-
+    # 自定义CSS样式，设置文字颜色为白色
+    st.markdown(
+        f'''
+        <p style="color: white; background-color: red; padding: 10px; border-radius: 5px;">
+        ⛔️未获取到变量：请检查以下变量是否填写：{", ".join(missing_vars)}
+        </p>
+        ''',
+        unsafe_allow_html=True
+    )
 
 if st.button("开始任务"):
     if phone and password and step1 and step2:
