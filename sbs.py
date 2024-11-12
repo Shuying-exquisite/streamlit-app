@@ -161,7 +161,7 @@ if __name__ == "__main__":
     page_bg_img = '''
 <style>
 .stApp {
-    background-image: url("https://example.com/your-image.jpg");
+    background-image: url("https://github.com/Shuying-exquisite/streamlit-app/blob/main/image.jpg");
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
@@ -169,6 +169,7 @@ if __name__ == "__main__":
 </style>
 '''
     st.markdown(markdown_text)
+    st.markdown(page_bg_img, unsafe_allow_html=True)
     st.write(f"微信公众号【偶尔敲代码】\n")
 
     content = '微信公众号【偶尔敲代码】\n\n'
