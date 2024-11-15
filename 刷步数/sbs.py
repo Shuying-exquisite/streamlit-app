@@ -174,6 +174,7 @@ if __name__ == "__main__":
     st.markdown(markdown_text)
     
     st.write(f"微信公众号【偶尔敲代码】\n")
+    st.write(f"由于服务器主机位于美国与国内有8个小时时差，本程序需要在早上8点以后才能成功刷步\n")
     content = '微信公众号【偶尔敲代码】\n\n'
     phone = st.text_input("请输入zepplife账号")
     password = st.text_input("请输入zepplife密码")
