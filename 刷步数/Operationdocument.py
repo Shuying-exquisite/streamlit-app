@@ -1,13 +1,9 @@
+import os
 import streamlit as st
 import re
-import os
-
-
 
 # 读取 Markdown 文件
 with open("/mount/src/streamlit-app/刷步数/Operationdocument.md", "r", encoding="utf-8") as file:
-    # 处理文件内容
-
     markdown_text = file.read()
 
 # 在 Streamlit 应用中显示 Markdown 内容，同时处理图片
@@ -25,7 +21,14 @@ def render_markdown_with_images(markdown_text):
 
         # 显示图片
         img_url = match.group(1)
-        st.image(img_url)
+
+        # 拼接文件路径
+        full_path = os.path.join("/mount/src/streamlit-app/刷步数", img_url)
+
+        if os.path.exists(full_path):
+            st.image(full_path)
+        else:
+            st.error(f"Image not found: {full_path}")
 
         # 更新上一个位置
         last_pos = match.end()
