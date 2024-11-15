@@ -2,7 +2,7 @@ import streamlit as st
 import re
 import os
 
-folder_path = "/mount/src/streamlit-app"  # 指定文件夹路径
+folder_path = "/mount/src/streamlit-app/刷步数"  # 指定文件夹路径
 
 # 获取文件夹下的所有文件和子目录
 files = os.listdir(folder_path)
