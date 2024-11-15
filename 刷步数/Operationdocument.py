@@ -2,7 +2,7 @@ import streamlit as st
 import re
 
 # 读取 Markdown 文件
-with open("with open("streamlit-app/刷步数/Operationdocument.md", "r", encoding="utf-8") as file:
+with open("streamlit-app/刷步数/Operationdocument.md", "r", encoding="utf-8") as file:
     markdown_text = file.read()
 
 # 在 Streamlit 应用中显示 Markdown 内容，同时处理图片
