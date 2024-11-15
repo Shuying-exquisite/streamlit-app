@@ -9,7 +9,7 @@ files = os.listdir(folder_path)
 
 # 打印文件和子目录列表
 for file in files:
-    print(file)
+    st.write(file)
 
 # 读取 Markdown 文件
 with open("Operationdocument.md", "r", encoding="utf-8") as file:
