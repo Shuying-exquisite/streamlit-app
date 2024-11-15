@@ -1,6 +1,7 @@
 import streamlit as st
 import re
-
+import os
+st.write(os.getcwd())
 # 读取 Markdown 文件
 with open("Operationdocument.md", "r", encoding="utf-8") as file:
     markdown_text = file.read()
