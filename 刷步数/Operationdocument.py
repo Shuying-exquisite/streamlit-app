@@ -1,7 +1,16 @@
 import streamlit as st
 import re
 import os
-st.write(os.getcwd())
+
+folder_path = "/mount/src/streamlit-app"  # 指定文件夹路径
+
+# 获取文件夹下的所有文件和子目录
+files = os.listdir(folder_path)
+
+# 打印文件和子目录列表
+for file in files:
+    print(file)
+
 # 读取 Markdown 文件
 with open("Operationdocument.md", "r", encoding="utf-8") as file:
     markdown_text = file.read()
