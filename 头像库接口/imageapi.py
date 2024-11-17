@@ -1,6 +1,5 @@
 import streamlit as st
 import random
-import time
 
 # 定义图片链接列表
 image_urls = [
@@ -13,9 +12,12 @@ image_urls = [
 # 随机选择一个链接
 random_image_url = random.choice(image_urls)
 
-# 延时跳转
-time.sleep(2)  # 延时2秒后跳转
-st.experimental_set_query_params(url=random_image_url)
+# 使用JavaScript打开新标签页
+st.markdown(f"""
+    <script type="text/javascript">
+        window.open("{random_image_url}", "_blank");
+    </script>
+""", unsafe_allow_html=True)
 
-# 执行页面跳转
-st.markdown(f"<meta http-equiv='refresh' content='0; url={random_image_url}'>", unsafe_allow_html=True)
+# 提示用户操作
+st.write("正在跳转到随机链接...")
