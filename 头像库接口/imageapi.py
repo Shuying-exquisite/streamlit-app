@@ -28,14 +28,29 @@ img = Image.open(BytesIO(response.content))
 img_path = '/tmp/temp_image.jpg'
 img.save(img_path)
 
-# 自动触发下载
+# 将图片转换为 base64 编码
 with open(img_path, "rb") as file:
-    st.download_button(
-        label="下载图片",
-        data=file,
-        file_name="每日一图.jpg",
-        mime="image/jpeg",
-    )
+    img_data = file.read()
+    img_base64 = base64.b64encode(img_data).decode()
+
+# 使用 JavaScript 自动触发文件下载
+html_code = f"""
+    <html>
+        <body>
+            <script>
+                // 创建下载链接并自动触发点击
+                var link = document.createElement('a');
+                link.href = 'data:image/jpeg;base64,{img_base64}';
+                link.download = '每日一图.jpg';
+                link.click();
+            </script>
+        </body>
+    </html>
+"""
+
+# 嵌入自定义 HTML 和 JavaScript 触发下载
+st.components.v1.html(html_code)
 
 # 显示图片
 st.image(img, use_column_width=True)
+
