@@ -12,8 +12,12 @@ image_urls = [
 # 随机选择一个链接
 random_image_url = random.choice(image_urls)
 
-# 在当前标签页修改链接并跳转
-st.markdown(f"<meta http-equiv='refresh' content='0; url={random_image_url}'>", unsafe_allow_html=True)
+# 使用JavaScript在当前标签页跳转
+st.markdown(f"""
+    <script type="text/javascript">
+        window.location.href = "{random_image_url}";
+    </script>
+""", unsafe_allow_html=True)
 
 # 提示用户
 st.write("正在跳转到随机链接...")
