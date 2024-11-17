@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 import requests
 from io import BytesIO
+import base64
 
 # 设置页面配置：不显示任何 UI 元素
 st.set_page_config(page_title="每日一图", layout="centered", initial_sidebar_state="collapsed")
@@ -27,15 +28,17 @@ img = Image.open(BytesIO(response.content))
 img_path = '/tmp/temp_image.jpg'
 img.save(img_path)
 
-# 提供自动下载文件
+# 将文件转换为 base64 编码（用于自动下载）
 with open(img_path, "rb") as file:
-    st.download_button(
-        label="下载图片",
-        data=file,
-        file_name="每日一图.jpg",
-        mime="image/jpeg",
-        use_container_width=True
-    )
+    img_data = file.read()
+    img_base64 = base64.b64encode(img_data).decode()
 
-# 自动下载触发：提供下载链接让浏览器自动触发下载
-st.markdown(f'<a href="data:file/jpg;base64,{base64.b64encode(file.read()).decode()}" download="每日一图.jpg">', unsafe_allow_html=True)
+# 自动下载图片（通过 <a> 标签触发下载）
+download_link = f'<a href="data:image/jpeg;base64,{img_base64}" download="每日一图.jpg">自动下载图片</a>'
+
+# 显示下载链接
+st.markdown(download_link, unsafe_allow_html=True)
+
+# 仅显示图片
+st.image(img, use_column_width=True)
+
