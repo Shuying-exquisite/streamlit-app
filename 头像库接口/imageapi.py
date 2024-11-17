@@ -3,7 +3,7 @@ import random
 import requests
 
 # GitHub API URL
-repo_url = "https://api.github.com/repos/Shuying-exquisite/streamlit-app/contents/微信状态背景api/images"
+repo_url = "https://api.github.com/repos/Shuying-exquisite/streamlit-app/contents/头像库接口/image"
 
 # 获取GitHub目录下的图像文件
 response = requests.get(repo_url)
