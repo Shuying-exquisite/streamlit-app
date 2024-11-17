@@ -12,7 +12,7 @@ response = requests.get(repo_url)
 if response.status_code == 200:
     data = response.json()
     # 调试：打印返回数据
-    st.write("API 返回的数据:", data)
+    # st.write("API 返回的数据:", data)
 
     # 确保 `data` 是列表类型
     if isinstance(data, list):
