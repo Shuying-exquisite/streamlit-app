@@ -1,6 +1,5 @@
 import streamlit as st
 import random
-import time
 
 # 定义图片链接列表
 image_urls = [
@@ -13,7 +12,7 @@ image_urls = [
 # 随机选择一个链接
 random_image_url = random.choice(image_urls)
 
-# 自动跳转到该链接
+# 在当前标签页修改链接并跳转
 st.markdown(f"<meta http-equiv='refresh' content='0; url={random_image_url}'>", unsafe_allow_html=True)
 
 # 提示用户
