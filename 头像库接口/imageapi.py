@@ -32,7 +32,6 @@ else:
 # 随机选择并显示图像
 if image_urls:
     selected_image = random.choice(image_urls)
-    st.title('随机显示图像')
     st.image(selected_image, use_column_width=True)
 else:
     st.write('没有找到图像文件。')
