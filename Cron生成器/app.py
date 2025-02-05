@@ -3,8 +3,7 @@ from croniter import croniter, CroniterBadCronError, CroniterBadDateError
 from datetime import datetime
 import pytz
 
-
-# 配置时间单位参数
+# 配置时间单位参数（移除年字段）
 CRON_UNITS = [
     {'name': '秒', 'key': 'second', 'min': 0, 'max': 59, 'default': 0},
     {'name': '分', 'key': 'minute', 'min': 0, 'max': 59, 'default': 0},
@@ -13,7 +12,6 @@ CRON_UNITS = [
     {'name': '月', 'key': 'month', 'min': 1, 'max': 12, 'default': 1},
     {'name': '周', 'key': 'week', 'min': 0, 'max': 6, 'default': 0,
      'symbols': ['日', '一', '二', '三', '四', '五', '六']},
-    {'name': '年', 'key': 'year', 'min': 2024, 'max': 2100, 'default': '*'}
 ]
 
 def generate_cron_part(unit, params):
@@ -41,7 +39,7 @@ def generate_cron_part(unit, params):
 def parse_cron_expression(expression):
     """解析Cron表达式到各个参数"""
     parts = expression.strip().split()
-    if len(parts) != 7:
+    if len(parts) != 6:  # 修改为6字段
         raise ValueError("无效的Cron表达式")
 
     params = {}
@@ -66,7 +64,7 @@ def parse_cron_expression(expression):
 def get_next_execution_times(cron_exp, count=5):
     """健壮的时间计算函数"""
     try:
-        cron_format = 'with_seconds' if cron_exp.count(' ') == 6 else 'default'
+        cron_format = 'with_seconds' if cron_exp.count(' ') == 5 else 'default'  # 调整为6字段判断
         tz = pytz.timezone('Asia/Shanghai')
         cron = croniter(
             expr_format=cron_exp,
@@ -89,16 +87,14 @@ def main():
     if 'params' not in st.session_state:
         st.session_state.params = {unit['key']: {'mode': 'each'} for unit in CRON_UNITS}
 
-    # 创建布局
-    col_size = [1, 1, 1, 1.5, 1.5, 1.5, 1]
+    # 创建布局（调整为6列）
+    col_size = [1, 1, 1, 1.5, 1.5, 1.5]
     cols = st.columns(col_size)
 
-    # 生成时间单位控件
+    # 生成时间单位控件（移除年字段）
     for i, unit in enumerate(CRON_UNITS):
         with cols[i]:
             st.subheader(unit['name'])
-
-            # 模式选择
             mode = st.radio(
                 f"{unit['name']}模式",
                 ['每个', '范围', '间隔', '指定值'],
@@ -107,7 +103,6 @@ def main():
                     st.session_state.params[unit['key']]['mode'])
             )
 
-            # 根据模式显示不同控件
             if mode == '范围':
                 c1, c2 = st.columns(2)
                 with c1:
@@ -150,7 +145,7 @@ def main():
             else:
                 st.session_state.params[unit['key']] = {'mode': 'each'}
 
-    # 生成Cron表达式
+    # 生成Cron表达式（6字段）
     cron_parts = []
     for unit in CRON_UNITS:
         part = generate_cron_part(unit, st.session_state.params[unit['key']])
