@@ -63,11 +63,29 @@ def parse_cron_expression(expression):
     return params
 
 def get_next_execution_times(cron_exp, count=5):
-    """获取下次执行时间"""
+    """增强版时间计算"""
     try:
-        cron = croniter(cron_exp, datetime.now(pytz.utc))
-        return [cron.get_next(datetime).strftime('%Y-%m-%d %H:%M:%S') for _ in range(count)]
-    except:
+        # 支持秒级精度和年份
+        cron_format = 'with_seconds' if cron_exp.count(' ') == 6 else 'default'
+
+        # 使用时区
+        tz = pytz.timezone('Asia/Shanghai')
+        start_time = datetime.now(tz)
+
+        cron = croniter(cron_exp, start_time, cron_format=cron_format)
+        return [cron.get_next(datetime).strftime('%Y-%m-%d %H:%M:%S') 
+               for _ in range(count)]
+
+    except CroniterBadCronError as e:
+        st.error(f"表达式格式错误: {str(e)}")
+        return []
+
+    except CroniterBadDateError as e:
+        st.error(f"无效日期: {str(e)}")
+        return []
+
+    except Exception as e:
+        st.error(f"未知错误: {str(e)}")
         return []
 
 def main():
