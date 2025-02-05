@@ -1,5 +1,5 @@
 import streamlit as st
-from croniter import croniter
+from croniter import croniter, CroniterBadCronError, CroniterBadDateError
 from datetime import datetime
 import pytz
 
@@ -64,16 +64,22 @@ def parse_cron_expression(expression):
     return params
 
 def get_next_execution_times(cron_exp, count=5):
+    """健壮的时间计算函数"""
     try:
+        cron_format = 'with_seconds' if cron_exp.count(' ') == 6 else 'default'
+        tz = pytz.timezone('Asia/Shanghai')
         cron = croniter(
-            cron_exp,
-            start_time=datetime.now(pytz.utc),
-            cron_format='with_seconds' if cron_exp.count(' ') == 6 else 'default'
+            expr_format=cron_exp,
+            start_time=datetime.now(tz),
+            cron_format=cron_format
         )
-        return [cron.get_next(datetime).strftime('%Y-%m-%d %H:%M:%S') 
+        return [cron.get_next(datetime).astimezone(tz).strftime('%Y-%m-%d %H:%M:%S') 
                for _ in range(count)]
+    except (CroniterBadCronError, CroniterBadDateError) as e:
+        st.error(f"配置错误: {str(e)}")
+        return []
     except Exception as e:
-        st.error(f"错误: {str(e)}")
+        st.error(f"系统错误: {str(e)}")
         return []
 
 def main():
