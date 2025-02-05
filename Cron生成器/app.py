@@ -179,5 +179,4 @@ def main():
             st.error(f"错误：{str(e)}")
 
 if __name__ == "__main__":
-    st.write(croniter.__version__)  
     main()
