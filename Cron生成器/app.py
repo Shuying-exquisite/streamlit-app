@@ -2,6 +2,9 @@ import streamlit as st
 from croniter import croniter
 from datetime import datetime
 import pytz
+from croniter import CroniterBadCronError, CroniterBadDateError
+
+
 
 # 配置时间单位参数
 CRON_UNITS = [
@@ -62,18 +65,19 @@ def parse_cron_expression(expression):
 
     return params
 
+# 修改时间计算函数
 def get_next_execution_times(cron_exp, count=5):
-    """增强版时间计算"""
+    """获取下次执行时间"""
     try:
-        # 支持秒级精度和年份
+        # 明确指定格式（支持秒和年）
         cron_format = 'with_seconds' if cron_exp.count(' ') == 6 else 'default'
 
-        # 使用时区
+        # 使用时区（示例使用上海时区）
         tz = pytz.timezone('Asia/Shanghai')
         start_time = datetime.now(tz)
 
         cron = croniter(cron_exp, start_time, cron_format=cron_format)
-        return [cron.get_next(datetime).strftime('%Y-%m-%d %H:%M:%S') 
+        return [cron.get_next(datetime).astimezone(tz).strftime('%Y-%m-%d %H:%M:%S') 
                for _ in range(count)]
 
     except CroniterBadCronError as e:
@@ -81,12 +85,13 @@ def get_next_execution_times(cron_exp, count=5):
         return []
 
     except CroniterBadDateError as e:
-        st.error(f"无效日期: {str(e)}")
+        st.error(f"包含不可能的时间: {str(e)}")
         return []
 
     except Exception as e:
         st.error(f"未知错误: {str(e)}")
         return []
+
 
 def main():
     st.set_page_config(page_title="Cron表达式生成器", layout="wide")
