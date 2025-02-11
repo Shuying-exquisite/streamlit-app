@@ -1,126 +1,184 @@
 import streamlit as st
-from cron_parser import CronParser  # 使用第三方库 cron-parser
+from croniter import croniter
+from datetime import datetime
+import pytz
 
-# 定义一个函数来生成 Cron 表达式（去掉年份部分）
-def generate_cron_expression(
-    second="*",
-    minute="*",
-    hour="*",
-    day_of_month="*",
-    month="*",
-    day_of_week="*"
-):
-    cron_expression = f"{second} {minute} {hour} {day_of_month} {month} {day_of_week}"
-    return cron_expression
+# 配置时间单位参数（移除年字段）
+CRON_UNITS = [
+    {'name': '秒', 'key': 'second', 'min': 0, 'max': 59, 'default': 0},
+    {'name': '分', 'key': 'minute', 'min': 0, 'max': 59, 'default': 0},
+    {'name': '时', 'key': 'hour', 'min': 0, 'max': 23, 'default': 0},
+    {'name': '日', 'key': 'day', 'min': 1, 'max': 31, 'default': 1},
+    {'name': '月', 'key': 'month', 'min': 1, 'max': 12, 'default': 1},
+    {'name': '周', 'key': 'week', 'min': 0, 'max': 6, 'default': 0,
+     'symbols': ['日', '一', '二', '三', '四', '五', '六']},
+]
 
-# 定义一个函数来解析 Cron 表达式
-def parse_cron_expression(cron_expression):
+def generate_cron_part(unit, params):
+    """生成单个时间单位的cron表达式部分"""
+    mode = params['mode']
+
+    if mode == 'each':
+        return '*' if unit['key'] != 'week' else '?'
+
+    elif mode == 'range':
+        start = params.get('start', unit['min'])
+        end = params.get('end', unit['max'])
+        return f'{start}-{end}'
+
+    elif mode == 'step':
+        interval = params.get('interval', 1)
+        return f'*/{interval}'
+
+    elif mode == 'specific':
+        values = ','.join(map(str, params.get('values', [])))
+        return values if values else '*'
+
+    return '*'
+
+def parse_cron_expression(expression):
+    """解析Cron表达式到各个参数"""
+    parts = expression.strip().split()
+    if len(parts) != 6:  # 修改为6字段
+        raise ValueError("无效的Cron表达式")
+
+    params = {}
+    for i, unit in enumerate(CRON_UNITS):
+        part = parts[i]
+        if part == '*':
+            params[unit['key']] = {'mode': 'each'}
+        elif '-' in part:
+            start, end = part.split('-')
+            params[unit['key']] = {'mode': 'range', 'start': start, 'end': end}
+        elif part.startswith('*/'):
+            interval = part[2:]
+            params[unit['key']] = {'mode': 'step', 'interval': interval}
+        elif ',' in part:
+            values = part.split(',')
+            params[unit['key']] = {'mode': 'specific', 'values': values}
+        else:
+            params[unit['key']] = {'mode': 'specific', 'values': [part]}
+
+    return params
+
+def get_next_execution_times(cron_exp, count=5):
+    """获取下次执行时间"""
     try:
-        parser = CronParser(cron_expression)
-        description = parser.to_description()
-        return description
+        # 使用时区（示例使用上海时区）
+        tz = pytz.timezone('Asia/Shanghai')
+        start_time = datetime.now(tz)
+
+        # 创建 croniter 实例时不需要 'cron_format' 参数
+        cron = croniter(cron_exp, start_time)
+        return [cron.get_next(datetime).astimezone(tz).strftime('%Y-%m-%d %H:%M:%S') 
+               for _ in range(count)]
+
+    except ValueError as e:
+        st.error(f"表达式格式错误: {str(e)}")
+        return []
+
     except Exception as e:
-        return f"解析失败: {e}"
+        st.error(f"未知错误: {str(e)}")
+        return []
 
-# Streamlit 应用程序
 def main():
-    st.title("Cron 表达式生成与解析工具 V2（去掉年份）")
-    st.markdown("---")
+    st.set_page_config(page_title="Cron表达式生成器", layout="wide")
+    st.title("🕒 Cron表达式生成器")
 
-    # 侧边栏选择功能
-    st.sidebar.title("功能选择")
-    option = st.sidebar.radio("选择功能", ["生成 Cron 表达式", "解析 Cron 表达式"])
+    if 'params' not in st.session_state:
+        st.session_state.params = {unit['key']: {'mode': 'each'} for unit in CRON_UNITS}
 
-    if option == "生成 Cron 表达式":
-        st.subheader("生成 Cron 表达式")
-        col1, col2 = st.columns(2)
+    # 创建布局（调整为6列）
+    col_size = [1, 1, 1, 1.5, 1.5, 1.5]
+    cols = st.columns(col_size)
 
-        with col1:
-            # 分钟
-            minute_options = ["*", "每隔 10 分钟", "每隔 30 分钟", "自定义"]
-            minute_choice = st.selectbox("分钟", minute_options, index=0)
-            if minute_choice == "自定义":
-                minute = st.text_input("自定义分钟 (0-59)", "0")
-            else:
-                if minute_choice == "每隔 10 分钟":
-                    minute = "*/10"
-                elif minute_choice == "每隔 30 分钟":
-                    minute = "*/30"
-                else:
-                    minute = "*"
-
-            # 小时
-            hour_options = ["*", "每隔 1 小时", "每隔 12 小时", "自定义"]
-            hour_choice = st.selectbox("小时", hour_options, index=0)
-            if hour_choice == "自定义":
-                hour = st.text_input("自定义小时 (0-23)", "0")
-            else:
-                if hour_choice == "每隔 1 小时":
-                    hour = "*/1"
-                elif hour_choice == "每隔 12 小时":
-                    hour = "0 12"
-                else:
-                    hour = "*"
-
-            # 日期
-            date_options = ["*", "每天", "每月 1 号和 15 号", "自定义"]
-            date_choice = st.selectbox("日期", date_options, index=0)
-            if date_choice == "自定义":
-                date = st.text_input("自定义日期 (1-31)", "1")
-            else:
-                if date_choice == "每月 1 号和 15 号":
-                    date = "1,15"
-                else:
-                    date = "*"
-
-        with col2:
-            # 月份
-            month_options = ["*", "每年", "每年 1 月和 6 月", "自定义"]
-            month_choice = st.selectbox("月份", month_options, index=0)
-            if month_choice == "自定义":
-                month = st.text_input("自定义月份 (1-12)", "1")
-            else:
-                if month_choice == "每年 1 月和 6 月":
-                    month = "1,6"
-                else:
-                    month = "*"
-
-            # 星期
-            week_options = ["*", "每周一至周五", "每周日", "自定义"]
-            week_choice = st.selectbox("星期", week_options, index=0)
-            if week_choice == "自定义":
-                week = st.text_input("自定义星期 (0-6, 0=周日)", "0")
-            else:
-                if week_choice == "每周一至周五":
-                    week = "1-5"
-                elif week_choice == "每周日":
-                    week = "0"
-                else:
-                    week = "*"
-
-        if st.button("生成 Cron 表达式"):
-            cron_expr = generate_cron_expression(
-                minute=minute,
-                hour=hour,
-                day_of_month=date,
-                month=month,
-                day_of_week=week
+    # 生成时间单位控件（移除年字段）
+    for i, unit in enumerate(CRON_UNITS):
+        with cols[i]:
+            st.subheader(unit['name'])
+            mode = st.radio(
+                f"{unit['name']}模式",
+                ['每个', '范围', '间隔', '指定值'],
+                key=f"{unit['key']}_mode",
+                index=['each', 'range', 'step', 'specific'].index(
+                    st.session_state.params[unit['key']]['mode'])
             )
-            st.subheader("生成的 Cron 表达式:")
-            st.code(cron_expr)
-            st.subheader("Cron 表达式含义:")
-            st.markdown(parse_cron_expression(cron_expr))
 
-    elif option == "解析 Cron 表达式":
-        st.subheader("解析 Cron 表达式")
-        cron_expression = st.text_input("请输入 Cron 表达式 (例如: 0 0 2 * * *)", "0 0 2 * * *")
-        if st.button("解析 Cron 表达式"):
-            description = parse_cron_expression(cron_expression)
-            st.subheader("解析结果:")
-            st.write(description)
+            if mode == '范围':
+                c1, c2 = st.columns(2)
+                with c1:
+                    start = st.number_input(
+                        '开始', 
+                        min_value=unit['min'],
+                        max_value=unit['max'],
+                        value=int(st.session_state.params[unit['key']].get('start', unit['min'])),
+                        key=f"{unit['key']}_start"
+                    )
+                with c2:
+                    end = st.number_input(
+                        '结束',
+                        min_value=start,
+                        max_value=unit['max'],
+                        value=int(st.session_state.params[unit['key']].get('end', unit['max'])),
+                        key=f"{unit['key']}_end"
+                    )
+                st.session_state.params[unit['key']] = {'mode': 'range', 'start': start, 'end': end}
 
-    st.markdown("---")
-    st.markdown("提示: 你可以通过 [Cron 表达式指南](https://crontab.guru/) 了解更多 Cron 表达式的用法和规则。")
+            elif mode == '间隔':
+                interval = st.number_input(
+                    '间隔值',
+                    min_value=1,
+                    max_value=unit['max'],
+                    value=int(st.session_state.params[unit['key']].get('interval', 1)),
+                    key=f"{unit['key']}_interval"
+                )
+                st.session_state.params[unit['key']] = {'mode': 'step', 'interval': interval}
+
+            elif mode == '指定值':
+                values = st.multiselect(
+                    '选择值',
+                    options=range(unit['min'], unit['max']+1),
+                    default=[int(x) for x in st.session_state.params[unit['key']].get('values', [])],
+                    key=f"{unit['key']}_values"
+                )
+                st.session_state.params[unit['key']] = {'mode': 'specific', 'values': values}
+
+            else:
+                st.session_state.params[unit['key']] = {'mode': 'each'}
+
+    # 生成Cron表达式（6字段）
+    cron_parts = []
+    for unit in CRON_UNITS:
+        part = generate_cron_part(unit, st.session_state.params[unit['key']])
+        cron_parts.append(part)
+    cron_expression = ' '.join(cron_parts)
+
+    # 手动输入解析
+    with st.expander("高级选项"):
+        manual_exp = st.text_input("或直接输入Cron表达式：", cron_expression)
+        if manual_exp != cron_expression:
+            try:
+                parsed_params = parse_cron_expression(manual_exp)
+                for unit in CRON_UNITS:
+                    st.session_state.params[unit['key']] = parsed_params[unit['key']]
+            except Exception as e:
+                st.error(f"错误：{str(e)}")
+
+    # 显示结果
+    st.markdown(f"**生成的Cron表达式：** `{cron_expression}`")
+
+    # 计算下次执行时间
+    if st.button('计算下次执行时间'):
+        try:
+            next_times = get_next_execution_times(cron_expression)
+            if next_times:
+                st.markdown("**下次执行时间：**")
+                for time in next_times:
+                    st.write(f"- {time}")
+            else:
+                st.warning("无法计算执行时间")
+        except Exception as e:
+            st.error(f"错误：{str(e)}")
 
 if __name__ == "__main__":
     main()
