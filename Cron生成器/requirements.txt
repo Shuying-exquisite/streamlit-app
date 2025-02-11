@@ -1,2 +1,4 @@
-streamlit==1.27.0
-cron-parser==2.0.0
+streamlit
+croniter
+datetime
+pytz
