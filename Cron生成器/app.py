@@ -120,7 +120,7 @@ def main():
             st.write(description)
 
     st.markdown("---")
-    st.markdown("提示: 你可以通过 [Cron 表达式指南](https://crontab.guru/) 了解更多 Cron 表达式的用法和规则。"[^1^])
+    st.markdown("提示: 你可以通过 [Cron 表达式指南](https://crontab.guru/) 了解更多 Cron 表达式的用法和规则。")
 
 if __name__ == "__main__":
     main()
