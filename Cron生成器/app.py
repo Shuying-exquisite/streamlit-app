@@ -41,7 +41,7 @@ def generate_cron_part(unit, params):
             return str(values)
 
     return '*'
-    
+
 def parse_cron_expression(expression):
     """解析Cron表达式到各个参数"""
     parts = expression.strip().split()
@@ -95,7 +95,7 @@ def parse_cron_expression(expression):
     day_params = params.get('day', {})
     week_params = params.get('week', {})
     
-    if (day_params.get('mode') not in ['each', 'none']) and (week_params.get('mode') not in ['each', 'none']):
+    if (day_params.get('mode') != 'each') and (week_params.get('mode') != 'each'):
         raise ValueError("不能同时指定 '日' 和 '周' 字段")
     
     return params
