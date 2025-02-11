@@ -35,15 +35,13 @@ def generate_cron_part(unit, params):
 
     elif mode == 'specific':
         values = params.get('values', [])
-        if not values:
-            return '*'
-        elif isinstance(values, list):
+        if isinstance(values, list):
             return ','.join(map(str, values))
         else:
             return str(values)
 
     return '*'
-
+    
 def parse_cron_expression(expression):
     """解析Cron表达式到各个参数"""
     parts = expression.strip().split()
@@ -58,6 +56,10 @@ def parse_cron_expression(expression):
         current_params = params.setdefault(unit['key'], {})
         
         if part == '*':
+            current_params['mode'] = 'each'
+        elif part == '?':
+            if unit['key'] not in ['day', 'week']:
+                raise ValueError(f"问号只能用在 '日' 或 '周' 字段，但出现在 {unit['name']} 字段")
             current_params['mode'] = 'each'
         elif '-' in part:
             try:
@@ -88,6 +90,13 @@ def parse_cron_expression(expression):
                 current_params['values'] = [value]
             except ValueError:
                 raise ValueError(f"无效的指定值: {part}")
+    
+    # 检查 "日" 和 "周" 字段是否同时有值
+    day_params = params.get('day', {})
+    week_params = params.get('week', {})
+    
+    if (day_params.get('mode') not in ['each', 'none']) and (week_params.get('mode') not in ['each', 'none']):
+        raise ValueError("不能同时指定 '日' 和 '周' 字段")
     
     return params
 
