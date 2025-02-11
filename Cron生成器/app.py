@@ -1,17 +1,16 @@
 import streamlit as st
 from cron_parser import CronParser  # 使用第三方库 cron-parser
 
-# 定义一个函数来生成 Cron 表达式
+# 定义一个函数来生成 Cron 表达式（去掉年份部分）
 def generate_cron_expression(
     second="*",
     minute="*",
     hour="*",
     day_of_month="*",
     month="*",
-    day_of_week="*",
-    year="*"
+    day_of_week="*"
 ):
-    cron_expression = f"{second} {minute} {hour} {day_of_month} {month} {day_of_week} {year}"
+    cron_expression = f"{second} {minute} {hour} {day_of_month} {month} {day_of_week}"
     return cron_expression
 
 # 定义一个函数来解析 Cron 表达式
@@ -25,7 +24,7 @@ def parse_cron_expression(cron_expression):
 
 # Streamlit 应用程序
 def main():
-    st.title("Cron 表达式生成与解析工具")
+    st.title("Cron 表达式生成与解析工具 V2（去掉年份）")
     st.markdown("---")
 
     # 侧边栏选择功能
@@ -99,17 +98,13 @@ def main():
                 else:
                     week = "*"
 
-            # 年份
-            year = st.text_input("年份 (留空使用默认值 `*`)", "*")
-
         if st.button("生成 Cron 表达式"):
             cron_expr = generate_cron_expression(
                 minute=minute,
                 hour=hour,
                 day_of_month=date,
                 month=month,
-                day_of_week=week,
-                year=year
+                day_of_week=week
             )
             st.subheader("生成的 Cron 表达式:")
             st.code(cron_expr)
@@ -125,8 +120,7 @@ def main():
             st.write(description)
 
     st.markdown("---")
-    st.markdown("提示: 你可以通过 [Cron 表达式指南](https://crontab.guru/) 了解更多 Cron 表达式的用法和规则。")
-    st.markdown("[^1^]")
+    st.markdown("提示: 你可以通过 [Cron 表达式指南](https://crontab.guru/) 了解更多 Cron 表达式的用法和规则。"[^1^])
 
 if __name__ == "__main__":
     main()
