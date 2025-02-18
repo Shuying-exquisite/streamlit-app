@@ -1787,7 +1787,7 @@ if __name__ == '__main__':
     tokens = token.split('\n')
     # st.write(tokens)
     if len(tokens) > 0:
-        st.write(f">>>>>>>>>>共获取到{len(tokens)}个账号<<<<<<<<<<")
+        st.write(f">>>>>>>>>>共获取到{len(tokens)}个账号<<<<<<<<<< \n")
         for index, infos in enumerate(tokens):
             run_result = RUN(infos, index).main()
             if not run_result: continue
