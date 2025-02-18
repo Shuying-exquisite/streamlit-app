@@ -162,7 +162,7 @@ class RUN:
             return None
 
     def sign(self):
-        st.write(f'>>>>>>开始执行签到')
+        st.write(f'开始执行签到')
         json_data = {"comeFrom": "vioin", "channelFrom": "WEIXIN"}
         url = 'https://mcs-mimp-web.sf-express.com/mcs-mimp/commonPost/~memberNonactivity~integralTaskSignPlusService~automaticSignFetchPackage'
         response = self.do_request(url, data=json_data)
