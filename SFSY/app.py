@@ -1645,9 +1645,9 @@ class RUN:
             st.write('周年庆活动已结束')
 
         current_date = datetime.now().day
-        if 26 <= current_date <= 28:
+        # if 26 <= current_date <= 28:
             # self.member_day_index()
-        else:
+        # else:
             # st.write('未到指定时间不执行会员日任务')
             
             
