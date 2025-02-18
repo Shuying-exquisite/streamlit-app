@@ -10,6 +10,12 @@ from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from urllib.parse import unquote
 import streamlit as st
 
+st.set_page_config(
+    page_title="顺丰速运",  # 设置网页的标题
+    page_icon=":guardsman:",  # 可以设置一个 emoji 图标，或者是本地图标路径
+    layout="wide"  # 设置布局方式（可以是 'centered' 或 'wide'）
+)
+
 # 禁用安全请求警告
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
