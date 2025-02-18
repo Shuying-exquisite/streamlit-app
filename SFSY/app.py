@@ -1775,6 +1775,10 @@ if __name__ == '__main__':
     local_script_name = os.path.basename(__file__)
     local_version = '2025.01.06'
     st.markdown('<h1 style="text-align: center;">顺丰速运获得蜂蜜积分程序</h1>', unsafe_allow_html=True)
+    markdown_text = """
+ [点击这里访问抓包教程](https://mp.weixin.qq.com/s/WYTA63SJotV0fh4Mx-nOBw)
+"""
+    st.markdown(markdown_text)
     token = st.text_input("请输入sfsyUrl:")
     if st.button("开始任务"):
         if token:st.write("开始执行任务")
