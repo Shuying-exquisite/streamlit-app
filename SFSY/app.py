@@ -476,7 +476,7 @@ class RUN:
                     st.write(f'暂时不支持【{self.title}】任务')
                 # if self.taskType == 'BEES_GAME_TASK_TYPE':
                 #     self.honey_damaoxian()
-        self.EAR_END_2023_getAward()
+        #self.EAR_END_2023_getAward()
         #self.EAR_END_2023_GuessIdiom()
 
     def addDeliverPrefer(self):
@@ -1646,13 +1646,13 @@ class RUN:
 
         current_date = datetime.now().day
         if 26 <= current_date <= 28:
-            self.member_day_index()
+            # self.member_day_index()
         else:
-            st.write('未到指定时间不执行会员日任务')
+            # st.write('未到指定时间不执行会员日任务')
             
             
         # 在所有任务执行完后、发送消息前显示财神卡信息
-        #self.YEAEND_2024_wealthStatus()
+        # self.YEAEND_2024_wealthStatus()
         
         self.sendMsg()
         return True
